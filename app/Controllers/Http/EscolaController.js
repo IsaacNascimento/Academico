@@ -86,7 +86,14 @@ class EscolaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params, request, response }) {   //  ROUTE =>  http://127.0.0.1:3333/escolas/14
+    const escola = await Escola.findOrFail(params.id); //Recupera dados do BD
+    const dados = request.only(['nome', 'email', 'telefone']); // Insere/recebe dados 
+
+    escola.merge(dados); //Sobrescreve os dados inserirdos nos do BD
+    escola.save(); //Salva os dados inseridos
+
+    return escola; //retonra os novos dados
   }
 
   /**

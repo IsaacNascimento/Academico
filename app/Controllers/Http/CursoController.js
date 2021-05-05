@@ -45,8 +45,12 @@ class CursoController {
   async show({params, request}){
 
     // select * from cursos where id = :id
-    return await Curso.findOrFail( params.id);
-
+    // return await Curso.findOrFail( params.id); // Forma mais simples
+ 
+    return await Curso.query()                 // Mesma coisa do FindOrFail, porém usando o "with".
+                      .with('disciplinas')
+                      .where('id', params.id)
+                      .first();
   }
 
   async store({request}){
@@ -59,7 +63,18 @@ class CursoController {
      return await Curso.create(curso) */ // retorno o objeto inserido de forma sincrona (await) e cria um dado no BD
   }
   
-  async update({request}){
+  async update({params, request}){
+    const curso = await Curso.findOrFail( params.id); //Recupera dados do banco de dados
+
+    const dados = request.only(['nome', 'duracao']) //Insere dados
+    
+    curso.merge(dados); //Sobrescreve dados inseridos no curso que tem o dados no BD
+    curso.save() //Salva no banco de dados a alteração
+
+    // update cursos set nome = dados.nome, duracao = dados.duracao Where = 34
+
+    return curso //retorna o novo objeto
+
 
   }
   async destroy({params, request}){                    // Url => /cursos/56
