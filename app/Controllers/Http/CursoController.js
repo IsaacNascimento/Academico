@@ -1,83 +1,113 @@
 'use strict'
 
-const Curso = use('App/Models/Curso')
+/** @typedef {import('@adonisjs/framework/src/Request')} Request */
+/** @typedef {import('@adonisjs/framework/src/Response')} Response */
+/** @typedef {import('@adonisjs/framework/src/View')} View */
 
+const Curso = use("App/Models/Curso")
+/**
+ * Resourceful controller for interacting with Cursos
+ */
 class CursoController {
-
-  async index({request}){ // select from cursos
-    
-
-    //const {duracao} = request.all()
-             
-    /*return Curso.query()                   // Url =>  /cursos?duracao=8
-                //.where('duracao', duracao) // Selecionar os dados pelo duracao
-                .fetch()                     // O Curso.query().fetch() é que return Curso.all(); Mais indicado para uso devido a possibilidade de filtragem */
-
-   
-               
-    //return Curso.query().paginate(3, 5) // Url -> /cursos 
-                                          //mostar pag para não sobrecarregar o front end. Primeiro número seleciona a pag que vc quer buscar. Segundo número indica a quantidade de dados por página
-                                          //nesse caso é a 3º pag com 5 dados
-    
-    /*const {page} = request.all()
-    return Curso.query().paginate(page, 1) */
-                                         // Urç -> /cursos?page=1
-                                         // Seleciona a pag pela url, indicando pelo número 1 a quantidade de dados
-
-   /* const {page, perPage} = request.all()
-    return Curso.query().paginate(page, perPage) */ 
-                                        // Url => /cursos?page=1&&perPage=4
-                                        // Mesma coisa, porém agora a indicação do num de pag e quantidade de dados é pela url 
-                                
+  /**
+   * Show a list of all Cursos.
+   * GET Cursos
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async index ({ request, response, view }) {
     let {page, perPage} = request.all()
-    
-    perPage = perPage ? perPage : 5 // Se tiver passado a quantidade de dados por pag na url, então ele é igual ao dado da url, se não, ele vai ser 5. 
-   
-    return Curso.query().paginate(page, perPage)  
-                                        // Url => /cursos?page=2 ou /cursos?page=1&&perPage=4
-                                        // Mesma coisa, porém agora a indicação do num de pag e quantidade de dados é pela url ou if ternario da linha 34, na qual é 5.                             
-                                            
 
-    return Curso.all();
+    perPage = perPage ? perPage : 5
+
+    return await Curso.query().paginate(page, perPage);
   }
 
+  /* METODO CREATE É PARA FORM FRONT END
+   * Render a form to be used for creating a new Curso.
+   * GET Cursos/create
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   
+  async create ({ request, response, view }) {
+    return "TUDO CERTO"
+  }*/
 
-  async show({params, request}){
+  /**
+   * Create/save a new Curso.
+   * POST Cursos
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async store ({ request, response }) {
+    const curso = request.only(['nome', 'duracao'])
+    return await Curso.create(curso)
 
-    // select * from cursos where id = :id
-    // return await Curso.findOrFail( params.id); // Forma mais simples
- 
-    return await Curso.query()                 // Mesma coisa do FindOrFail, porém usando o "with".
+  }
+
+  /**
+   * Display a single Curso.
+   * GET Cursos/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async show ({ params, request, response, view }) {
+    return await Curso.query()                 
                       .with('disciplinas')
                       .where('id', params.id)
                       .first();
   }
 
-  async store({request}){
-    
-    const curso = request.only(['nome', 'duracao'])
-    return await Curso.create(curso)
-
-     /*const {nome, duracao} = request.all()
-     const curso = {nome, duracao}
-     return await Curso.create(curso) */ // retorno o objeto inserido de forma sincrona (await) e cria um dado no BD
-  }
+  /* METODO EDIT É PARA FORM FRONT END
+   * Render a form to update an existing Curso.
+   * GET Cursos/:id/edit
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
   
-  async update({params, request}){
-    const curso = await Curso.findOrFail( params.id); //Recupera dados do banco de dados
+    async edit ({ params, request, response, view }) {
+  }*/
 
-    const dados = request.only(['nome', 'duracao']) //Insere dados
-    
-    curso.merge(dados); //Sobrescreve dados inseridos no curso que tem o dados no BD
-    curso.save() //Salva no banco de dados a alteração
+  /**
+   * Update Curso details.
+   * PUT or PATCH Cursos/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async update ({ params, request, response }) {   //  ROUTE =>  http://127.0.0.1:3333/Cursos/14
+    const curso = await Curso.findOrFail(params.id); //Recupera dados do BD
+    const dados = request.only(['nome', 'duracao']); // Insere/recebe dados 
 
-    // update cursos set nome = dados.nome, duracao = dados.duracao Where = 34
+    curso.merge(dados); //Sobrescreve os dados inserirdos nos do BD
+    curso.save(); //Salva os dados inseridos
 
-    return curso //retorna o novo objeto
-
-
+    return curso; //retonra os novos dados
   }
-  async destroy({params, request}){                    // Url => /cursos/56
+
+  /**
+   * Delete a Curso with id.
+   * DELETE Cursos/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async destroy ({ params, request, response }) {
     const curso = await Curso.findOrFail( params.id); // Para apagar um dado é necessário primeiramente pesquisar no BD
 
     return await curso.delete();   // Depois de recuperado o dado, vc pode excluir

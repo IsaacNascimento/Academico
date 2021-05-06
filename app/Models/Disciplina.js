@@ -18,9 +18,6 @@ class Disciplina extends Model {
         return this.belongsTo('App/Models/Curso') // Disciplina Pertecem a curso
                   // Pertecem a 
     }
-
-
-
 }
 
 module.exports = Disciplina
