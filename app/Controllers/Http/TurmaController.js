@@ -48,7 +48,11 @@ class TurmaController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const turma = request.only(['codigo', 'turno', 'professor_id', 'disciplina_id', 'sala_id' ,'semestre_id'])
+    //const turma = request.only(['codigo', 'turno', 'professor_id', 'disciplina_id', 'sala_id' ,'semestre_id'])
+    //return await Turma.create(turma)
+
+    const campos = Turma.getCamposCadastro() //Forma mais elegante
+    const turma = request.only(campos)
     return await Turma.create(turma)
   }
 
@@ -62,7 +66,14 @@ class TurmaController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
-    return await Turma.findOrFail(params.id)
+    return await Turma.query()                 // Mesma coisa do FindOrFail, porém usando o "with".
+                      .with('semestre')
+                      .with('sala')
+                      .with('professor')
+                      .with('disciplina')
+                      .with('alunos')
+                      .where(' id', params.id)
+                      .first();
   }
 
   /**
@@ -86,6 +97,16 @@ class TurmaController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
+
+    const turma = await Turma.findOrFail(params.id); //Forma mais elegante
+
+    const campos = Turma.getCamposCadastro() // Exportar da Model. Assim vc não precisa modificar de um em um.
+    const dados = request.only(campos)
+
+    turma.merge(dados);
+    turma.save();
+
+    return turma;
   }
 
   /**

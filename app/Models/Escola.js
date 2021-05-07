@@ -4,6 +4,14 @@
 const Model = use('Model')
 
 class Escola extends Model {
+    
+    static getCamposCadastro(){
+        return [
+            'nome',
+            'email',
+            'telefone'
+        ]
+    }
 }
 
 module.exports = Escola

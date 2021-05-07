@@ -48,7 +48,11 @@ class SalaController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const sala = request.only(['nome', 'capacidade', 'tipo'])
+    //const sala = request.only(['nome', 'capacidade', 'tipo'])
+    //return await Sala.create(sala)
+
+    const campos = Sala.getCamposCadastro() //Forma mais elegante
+    const sala   = request.only(campos)
     return await Sala.create(sala)
   }
 
@@ -62,7 +66,10 @@ class SalaController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
-    return await Sala.findOrFail(params.id)
+    return await Sala.query()                 // Mesma coisa do FindOrFail, porém usando o "with".
+                     .with('turmas')
+                     .where('id', params.id)
+                     .first();
   }
 
   /**
@@ -86,6 +93,16 @@ class SalaController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
+
+    const sala = await Sala.findOrFail(params.id); //Forma mais elegante
+
+    const campos = Sala.getCamposCadastro() // Exportar da Model. Assim vc não precisa modificar de um em um.
+    const dados = request.only(campos)
+
+    sala.merge(dados);
+    sala.save();
+
+    return sala;
   }
 
   /**

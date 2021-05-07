@@ -48,8 +48,13 @@ class SemestreController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const semestre = request.only(['nome', 'data_inicio', 'data_fim'])
-    return await Semestre.create(semestre)
+    //const semestre = request.only(['nome', 'data_inicio', 'data_fim'])
+    //return await Semestre.create(semestre)
+
+      const campos = Semestre.getCamposCadastro() //Forma mais elegante
+      const semestre = request.only(campos)
+      return await Semestre.create(semestre)
+    
   }
 
   /**
@@ -62,7 +67,10 @@ class SemestreController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
-    return await Semestre.findOrFail(params.id)
+    return await Semestre.query()                 // Mesma coisa do FindOrFail, porém usando o "with".
+                         .with('turmas')
+                         .where('id', params.id)
+                         .first();
   }
 
   /**
@@ -86,6 +94,16 @@ class SemestreController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
+
+    const semestre = await Semestre.findOrFail(params.id); //Forma mais elegante
+
+    const campos = Semestre.getCamposCadastro() // Exportar da Model. Assim vc não precisa modificar de um em um.
+    const dados = request.only(campos)
+
+    semestre.merge(dados);
+    semestre.save();
+
+    return semestre;
   }
 
   /**

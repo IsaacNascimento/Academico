@@ -48,8 +48,13 @@ class EscolaController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const escola = request.only(['nome', 'email', 'telefone'])
+    //const escola = request.only(['nome', 'email', 'telefone'])
+    //return await Escola.create(escola)
+
+    const campos = Escola.getCamposCadastro() //Forma mais elegante
+    const escola = request.only(campos)
     return await Escola.create(escola)
+  
 
   }
 
@@ -87,13 +92,23 @@ class EscolaController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {   //  ROUTE =>  http://127.0.0.1:3333/escolas/14
-    const escola = await Escola.findOrFail(params.id); //Recupera dados do BD
-    const dados = request.only(['nome', 'email', 'telefone']); // Insere/recebe dados 
+    //const escola = await Escola.findOrFail(params.id); //Recupera dados do BD
+    //const dados = request.only(['nome', 'email', 'telefone']); // Insere/recebe dados 
 
-    escola.merge(dados); //Sobrescreve os dados inserirdos nos do BD
-    escola.save(); //Salva os dados inseridos
+    //escola.merge(dados); //Sobrescreve os dados inserirdos nos do BD
+    //escola.save(); //Salva os dados inseridos
 
-    return escola; //retonra os novos dados
+    //return escola; //retonra os novos dados
+
+    const escola = await Escola.findOrFail(params.id); //Forma mais elegante
+
+    const campos = Escola.getCamposCadastro() // Exportar da Model. Assim vc não precisa modificar de um em um.
+    const dados = request.only(campos)
+
+    escola.merge(dados);
+    escola.save();
+
+    return escola;
   }
 
   /**

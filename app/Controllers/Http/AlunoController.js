@@ -47,9 +47,14 @@ class AlunoController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const aluno = request.only(['nome', 'cpf', 'data_nascimento', 'matricula', 'email', 'telefone', 'cep', 'logradouro', 'complemento', 'bairro', 'uf', 'municipio'])
+    //const aluno = request.only(['nome', 'cpf', 'data_nascimento', 'matricula', 'email', 'telefone', 'cep', 'logradouro', 'complemento', 'bairro', 'uf', 'municipio'])
+    //return await Aluno.create(aluno)
+
+    const campos = Aluno.getCamposCadastro() //Forma mais elegante
+    const aluno = request.only(campos)
     return await Aluno.create(aluno)
   }
+
 
   /**
    * Display a single aluno.
@@ -61,7 +66,10 @@ class AlunoController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
-    return await Aluno.findOrFail(params.id);
+    return await Aluno.query()                 // Mesma coisa do FindOrFail, porém usando o "with".
+                      .with('turmas')
+                      .where(' id', params.id)
+                      .first();
   }
 
   /**
@@ -85,6 +93,16 @@ class AlunoController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
+
+    const aluno = await Aluno.findOrFail(params.id); //Forma mais elegante
+
+    const campos = Aluno.getCamposCadastro() // Exportar da Model. Assim vc não precisa modificar de um em um.
+    const dados = request.only(campos)
+
+    aluno.merge(dados);
+    aluno.save();
+
+    return aluno;
   }
 
   /**

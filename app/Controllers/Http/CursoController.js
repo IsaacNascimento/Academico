@@ -48,7 +48,11 @@ class CursoController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const curso = request.only(['nome', 'duracao'])
+    //const curso = request.only(['nome', 'duracao'])
+    //return await Curso.create(curso)
+
+    const campos = Curso.getCamposCadastro() //Forma mais elegante
+    const curso = request.only(campos)
     return await Curso.create(curso)
 
   }
@@ -90,13 +94,23 @@ class CursoController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {   //  ROUTE =>  http://127.0.0.1:3333/Cursos/14
-    const curso = await Curso.findOrFail(params.id); //Recupera dados do BD
-    const dados = request.only(['nome', 'duracao']); // Insere/recebe dados 
+    //const curso = await Curso.findOrFail(params.id); //Recupera dados do BD
+    //const dados = request.only(['nome', 'duracao']); // Insere/recebe dados 
 
-    curso.merge(dados); //Sobrescreve os dados inserirdos nos do BD
-    curso.save(); //Salva os dados inseridos
+    //curso.merge(dados); //Sobrescreve os dados inserirdos nos do BD
+    //curso.save(); //Salva os dados inseridos
 
-    return curso; //retonra os novos dados
+    //return curso; //retonra os novos dados
+
+    const curso = await Curso.findOrFail(params.id); //Forma mais elegante
+
+    const campos = Curso.getCamposCadastro() // Exportar da Model. Assim vc não precisa modificar de um em um.
+    const dados = request.only(campos)
+
+    curso.merge(dados);
+    curso.save();
+
+    return curso;
   }
 
   /**

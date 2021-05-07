@@ -63,10 +63,11 @@ class DisciplinasController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
-    return await Disciplinas.query()                 // Mesma coisa do FindOrFail, porém usando o "with".
-                           .with('curso')
-                           .where('id', params.id)
-                           .first();
+   return await Disciplinas.query()                 // Mesma coisa do FindOrFail, porém usando o "with".
+                            .with('curso')
+                            .with('turmas')
+                            .where(' id', params.id)
+                            .first();
   }  
 
   /* METODO EDIT É PARA FORM FRONT END
@@ -98,8 +99,8 @@ class DisciplinasController {
 
     return Disciplinas; //retonra os novos dados*/
 
-    disciplina.merge(dados);
-    disciplina.save();
+    //disciplina.merge(dados);
+    //disciplina.save();
 
     const disciplina = await Disciplinas.findOrFail(params.id); //Forma mais elegante
 

@@ -48,7 +48,11 @@ class ProfessorController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const professores = request.only(['nome', 'cpf', 'matricula', 'salario', 'email', 'telefone' ])
+    //const professores = request.only(['nome', 'cpf', 'matricula', 'salario', 'email', 'telefone' ])
+    //return await Professores.create(professores)
+
+    const campos = Professores.getCamposCadastro() //Forma mais elegante
+    const professores = request.only(campos)
     return await Professores.create(professores)
   }
 
@@ -62,7 +66,10 @@ class ProfessorController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
-      return await Professores.findOrFail( params.id);
+    return await Professores.query()                 // Mesma coisa do FindOrFail, porém usando o "with".
+                            .with('turmas')
+                            .where('id', params.id)
+                            .first();
     
   }
 
@@ -87,6 +94,16 @@ class ProfessorController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
+
+    const professor = await Professores.findOrFail(params.id); //Forma mais elegante
+
+    const campos = Professores.getCamposCadastro() // Exportar da Model. Assim vc não precisa modificar de um em um.
+    const dados = request.only(campos)
+
+    professor.merge(dados);
+    professor.save();
+
+    return professor;
   }
 
   /**
