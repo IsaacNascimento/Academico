@@ -101,7 +101,7 @@ class SemestreController {
     const dados = request.only(campos)
 
     semestre.merge(dados);
-    semestre.save();
+    await semestre.save();
 
     return semestre;
   }

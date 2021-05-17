@@ -67,8 +67,8 @@ class TurmasAlunoController {
    */
   async show ({ params, request, response, view }) {
     return await Turma_Aluno.query()                 // Mesma coisa do FindOrFail, porém usando o "with".
-                            /*.with('alunos')
-                            .with('turmas')*/
+                            .with('alunos')
+                            .with('turmas')
                             .where(' id', params.id)
                             .first();
   }
@@ -101,7 +101,7 @@ class TurmasAlunoController {
     const dados = request.only(campos)
 
     turmasalunos.merge(dados);
-    turmasalunos.save();
+    await turmasalunos.save();
 
     return turmasalunos;
 

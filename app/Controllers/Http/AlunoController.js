@@ -100,7 +100,7 @@ class AlunoController {
     const dados = request.only(campos)
 
     aluno.merge(dados);
-    aluno.save();
+    await aluno.save();
 
     return aluno;
   }

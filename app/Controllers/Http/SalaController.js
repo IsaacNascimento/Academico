@@ -100,7 +100,7 @@ class SalaController {
     const dados = request.only(campos)
 
     sala.merge(dados);
-    sala.save();
+    await sala.save();
 
     return sala;
   }

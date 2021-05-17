@@ -36,12 +36,65 @@ Route.delete('/cursos', 'CursoController.destroy')
 // Recuperar um registro = SHOW
 Route.get('/cursos', 'CursoController.show')
 */
-Route.resource('/alunos', 'AlunoController').apiOnly()
-Route.resource('/cursos', 'CursoController').apiOnly()
-Route.resource('/disciplinas', 'DisciplinaController').apiOnly()
-Route.resource('/escolas', 'EscolaController').apiOnly()
-Route.resource('/professores', 'ProfessorController').apiOnly()
-Route.resource('/salas', 'SalaController').apiOnly()
-Route.resource('/semestres', 'SemestreController').apiOnly()
-Route.resource('/turmas', 'TurmaController').apiOnly()
-Route.resource('/turmas_alunos', 'TurmasAlunoController').apiOnly()
+
+Route.resource('/cursos', 'CursoController')
+     .apiOnly()
+     .validator(new Map([
+       [['store', 'update'], 'Curso'], //qual metodo eu vou usar o validador. Nesse caso o método store, put usam o Curso Validator.
+     ]))
+     
+Route.resource('/alunos', 'AlunoController')
+     .apiOnly()
+     .validator(new Map([
+      [['store', 'update'], 'Aluno'], 
+    ]))
+
+Route.resource('/disciplinas', 'DisciplinaController')
+     .apiOnly()
+     .apiOnly()
+     .validator(new Map([
+      [['store', 'update'], 'Disciplina'], 
+    ]))
+
+Route.resource('/escolas', 'EscolaController')
+     .apiOnly()
+     .apiOnly()
+     .validator(new Map([
+      [['store', 'update'], 'Escola'], 
+    ]))
+
+Route.resource('/professores', 'ProfessorController')
+     .apiOnly()
+     .apiOnly()
+     .validator(new Map([
+      [['store', 'update'], 'Professor'], 
+    ]))
+
+Route.resource('/salas', 'SalaController')
+     .apiOnly()
+     .apiOnly()
+     .validator(new Map([
+      [['store', 'update'], 'Sala'], 
+    ]))
+
+Route.resource('/semestres', 'SemestreController')
+     .apiOnly()
+     .apiOnly()
+     .validator(new Map([
+      [['store', 'update'], 'Semestre'], 
+    ]))
+
+Route.resource('/turmas', 'TurmaController')
+     .apiOnly()
+     .apiOnly()
+     .validator(new Map([
+      [['store', 'update'], 'Turma'], 
+    ]))
+
+Route.resource('/turmas_alunos', 'TurmasAlunoController')
+     .apiOnly()
+     .apiOnly()
+     .validator(new Map([
+      [['store', 'update'], 'TurmasAluno'], 
+    ]))
+

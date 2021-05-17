@@ -106,7 +106,7 @@ class EscolaController {
     const dados = request.only(campos)
 
     escola.merge(dados);
-    escola.save();
+    await escola.save();
 
     return escola;
   }

@@ -104,7 +104,7 @@ class TurmaController {
     const dados = request.only(campos)
 
     turma.merge(dados);
-    turma.save();
+    await turma.save();
 
     return turma;
   }

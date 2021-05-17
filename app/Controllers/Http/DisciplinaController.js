@@ -108,7 +108,7 @@ class DisciplinasController {
     const dados = request.only(campos)
 
     disciplina.merge(dados);
-    disciplina.save();
+    await disciplina.save();
 
     return disciplina;
   }

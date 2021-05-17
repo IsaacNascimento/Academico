@@ -12,17 +12,17 @@ class TurmasAluno extends Model {
         ]
     }
 
-    /*alunos(){ // Singular porque somente vai retornar um objeto
+    alunos(){ // Singular porque somente vai retornar um objeto
 
-        return this.belongsToMany('App/Models/Aluno') // Disciplina Pertecem a curso
+        return this.belongsTo('App/Models/Aluno') // Disciplina Pertecem a curso
                   // Pertecem a 
     }
     
     turmas(){ // Singular porque somente vai retornar um objeto
 
-        return this.belongsToMany('App/Models/Turma') // Disciplina Pertecem a curso
+        return this.belongsTo('App/Models/Turma') // Disciplina Pertecem a curso
                   // Pertecem a 
-    }*/
+    }
 }
 
 module.exports = TurmasAluno

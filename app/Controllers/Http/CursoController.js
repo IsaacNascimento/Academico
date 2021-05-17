@@ -108,7 +108,7 @@ class CursoController {
     const dados = request.only(campos)
 
     curso.merge(dados);
-    curso.save();
+    await curso.save();
 
     return curso;
   }

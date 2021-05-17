@@ -101,7 +101,7 @@ class ProfessorController {
     const dados = request.only(campos)
 
     professor.merge(dados);
-    professor.save();
+    await professor.save();
 
     return professor;
   }
