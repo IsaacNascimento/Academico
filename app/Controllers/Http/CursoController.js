@@ -18,6 +18,26 @@ class CursoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
+  
+  /**
+  * @swagger
+  * /api/hello:
+  *   get:
+  *     tags:
+  *       - Test
+  *     summary: Sample API
+  *     parameters:
+  *       - name: name
+  *         description: Name of the user
+  *         in: query
+  *         required: false
+  *         type: string
+  *     responses:
+  *       200:
+  *         description: Send hello message
+  *         example:
+  *           message: Hello Guess
+  */
   async index ({ request, response, view }) {
     let {page, perPage} = request.all()
 

@@ -37,11 +37,18 @@ Route.delete('/cursos', 'CursoController.destroy')
 Route.get('/cursos', 'CursoController.show')
 */
 
-Route.resource('/cursos', 'CursoController')
+Route.post('/token', 'UserController.token')
+Route.resource('/users', 'UserController').apiOnly()
+
+
+Route.group(()=> {
+
+  Route.resource('/cursos', 'CursoController')
      .apiOnly()
      .validator(new Map([
        [['store', 'update'], 'Curso'], //qual metodo eu vou usar o validador. Nesse caso o método store, put usam o Curso Validator.
      ]))
+     //.middleware('auth')
      
 Route.resource('/alunos', 'AlunoController')
      .apiOnly()
@@ -97,4 +104,7 @@ Route.resource('/turmas_alunos', 'TurmasAlunoController')
      .validator(new Map([
       [['store', 'update'], 'TurmasAluno'], 
     ]))
+
+}).middleware('auth')
+
 
